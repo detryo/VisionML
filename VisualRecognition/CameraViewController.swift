@@ -61,6 +61,28 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         
+        if let error = error {
+            print("ERROR: \(error)")
+            return
+        }
+        
+        let photoData = photo.fileDataRepresentation()
+        let dataProvider = CGDataProvider(data: photoData! as CFData )
+        
+        let cgImageRef = CGImage(jpegDataProviderSource: dataProvider!,
+                                 decode: nil,
+                                 shouldInterpolate: true,
+                                 intent: .defaultIntent)
+        
+        classify(cgImageRef!) { (data) in
+            
+            self.push(data: data)
+        }
+        
+        let image = UIImage(data: photoData!)
+        self.tempImageView.image = image
+        self.tempImageView.isHidden = false
+        
     }
     
     func classify(_ image: CGImage, completion: @escaping ([VNClassificationObservation]) -> Void) {
