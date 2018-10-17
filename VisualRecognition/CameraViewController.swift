@@ -83,6 +83,21 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     @IBAction func takePhoto() {
         
+        self.photoOutput?.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+        self.captureButton.isHidden = true
+        self.retakeButton.isHidden = false
+        
+        let alert = UIAlertController(title: "Prossesing", message: "Please, waiting..", preferredStyle: .alert)
+        alert.view.tintColor = UIColor.black
+        
+        let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50)) as UIActivityIndicatorView
+        
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        activityIndicator.startAnimating()
+        
+        alert.view.addSubview(activityIndicator)
+        present(alert, animated: true)
     }
     
     @IBAction func retake() {
