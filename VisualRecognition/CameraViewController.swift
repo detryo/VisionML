@@ -112,15 +112,33 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     func dismissResults() {
         
-        
+        getTableController { (tableController, drawer) in
+            drawer.setDrawerPosition(position: .closed, animated: true)
+            tableController.classification = []
+        }
     }
     
     func push(data: [VNClassificationObservation]) {
+        
+        getTableController { (tableController, drawer) in
+            tableController.classification = data
+            self.dismiss(animated: true, completion: nil)
+            drawer.setDrawerPosition(position: .partiallyRevealed, animated: true)
+        }
         
     }
     
     func getTableController(run: (_ tableController: ResultsTableViewController,
         _ drawer: PulleyViewController) -> Void) {
+        
+        if let drawer = self.parent as? PulleyViewController {
+            
+            if let tableController = drawer.drawerContentViewController as? ResultsTableViewController {
+                
+                run(tableController, drawer)
+                tableController.tableView.reloadData()
+            }
+        }
         
     }
     
